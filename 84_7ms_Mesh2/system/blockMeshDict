@@ -1,0 +1,310 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  12
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+convertToMeters 1;
+
+//////////////////////////// PARAMETERS FOR THE MESH ////////////////////////////
+// Domain 
+xmin -1;                           // left boundary
+xorg 0 ;                           // origin, x
+xmax 2;                            // right boundary
+ymin -0.5;                         // upper boundary
+yorg 0;                            // origin, y
+ymax 0.5;                          // lower boundary
+zmin 0;                            // plane 0
+zmax 1;                            // plane 1
+
+// Outer circle (for mesh)
+r2 0.25;                         // radius of the mesh circle
+a #calc "$r2*cos(0.785398163)";   // distance away from the origin to make vertices for mesh, 45 deg = 0.785398163 rad
+
+// Middle circle (for mesh)
+r1 0.15;                         // radius of the mesh circle
+b #calc "$r1*cos(0.785398163)";   // distance away from the origin to make vertices for mesh, 45 deg = 0.785398163 rad
+
+// Pipe
+r 0.05;                         // radius of the pipe
+c #calc "$r*cos(0.785398163)";  // distance away from the origin to make vertices for mesh,  45 deg = 0.785398163 rad
+co #calc "$r*cos(0.392699082)";  // distance away from the origin to make vertices for arc, 22.5 deg = 0.392699082 rad
+s #calc "$r*sin(0.392699082)";  // distance away from the origin to make vertices for arc, 22.5 deg = 0.392699082 rad
+
+
+//////////////////////////// PARAMETERS FOR THE MESH ////////////////////////////
+
+vertices
+(
+    // Hex a
+    ($xmin $ymin $zmin)                                     // 0
+    (#calc "$ymin*tan(0.785398163)" $ymin $zmin)            // 1
+    (#calc "$ymin*tan(0.785398163)" $yorg $zmin)            // 2
+    ($xmin $yorg $zmin)                                     // 3  
+    
+    ($xmin $ymin $zmax)                                     // 4
+    (#calc "$ymin*tan(0.785398163)" $ymin $zmax)            // 5
+    (#calc "$ymin*tan(0.785398163)" $yorg $zmax)            // 6
+    ($xmin $yorg $zmax)                                     // 7 
+    
+    // Hex b
+    (#calc "-1*$a" #calc "-1*$a" $zmin)                     // 8
+    (#calc "-1*$r2" $yorg $zmin)                            // 9    
+    (#calc "-1*$a" #calc "-1*$a" $zmax)                     // 10
+    (#calc "-1*$r2" $yorg $zmax)                            // 11       
+    
+    // Hex c
+    ($xorg $ymin $zmin)                                     // 12
+    ($xorg #calc "-1*$r2" $zmin)                            // 13
+    ($xorg $ymin $zmax)                                     // 14
+    ($xorg #calc "-1*$r2" $zmax)                            // 15    
+    
+    // hex d
+    (#calc "-1*$ymin*tan(0.785398163)" $ymin $zmin)         // 16
+    (#calc "$a" #calc "-1*$a" $zmin)                        // 17
+    (#calc "-1*$ymin*tan(0.785398163)" $ymin $zmax)         // 18
+    (#calc "$a" #calc "-1*$a" $zmax)                        // 19
+    
+    // hex e
+    ($r2 $yorg $zmin)                                       // 20
+    (#calc "-1*$ymin*tan(0.785398163)" $yorg $zmin)         // 21    
+    ($r2 $yorg $zmax)                                       // 22
+    (#calc "-1*$ymin*tan(0.785398163)" $yorg $zmax)         // 23   
+    
+    // hex f
+    ($xmax $ymin $zmin)                                     // 24
+    ($xmax $yorg $zmin)                                     // 25
+    ($xmax $ymin $zmax)                                     // 26
+    ($xmax $yorg $zmax)                                     // 27     
+    
+    // hex g
+    ($xmax $ymax $zmin)                                     // 28
+    (#calc "-1*$ymin*tan(0.785398163)" $ymax $zmin)         // 29    
+    ($xmax $ymax $zmax)                                     // 30
+    (#calc "-1*$ymin*tan(0.785398163)" $ymax $zmax)         // 31    
+    
+    // hex h
+    ($a $a $zmin)                                           // 32
+    ($a $a $zmax)                                           // 33      
+
+    // hex i
+    ($xorg $ymax $zmin)                                     // 34
+    ($xorg $r2 $zmin)                                       // 35
+    ($xorg $ymax $zmax)                                     // 36
+    ($xorg $r2 $zmax)                                       // 37    
+    
+    // hex j
+    (#calc "$ymin*tan(0.785398163)" $ymax $zmin)            // 38
+    (#calc "-1*$a" $a $zmin)                                // 39
+    (#calc "$ymin*tan(0.785398163)" $ymax $zmax)            // 40
+    (#calc "-1*$a" $a $zmax)                                // 41     
+    
+    // hex l
+    ($xmin $ymax $zmin)                                     // 42
+    ($xmin $ymax $zmax)                                     // 43
+    
+    // hex m
+    (#calc "-1*$b" #calc "-1*$b" $zmin)                     // 44
+    ($xorg #calc "-1*$r1" $zmin)                            // 45 
+    (#calc "-1*$b" #calc "-1*$b" $zmax)                     // 46
+    ($xorg #calc "-1*$r1" $zmax)                            // 47  
+    
+    // hex n
+    ($b #calc "-1*$b" $zmin)                                // 48
+    ($b #calc "-1*$b" $zmax)                                // 49    
+    
+    // hex o
+    ($r1 $yorg $zmin)                                       // 50  
+    ($r1 $yorg $zmax)                                       // 51
+    
+    // hex p
+    ($b $b $zmin)                                           // 52
+    ($b $b $zmax)                                           // 53
+    
+    // hex q
+    ($xorg $r1 $zmin)                                       // 54
+    ($xorg $r1 $zmax)                                       // 55     
+    
+    // hex r
+    (#calc "-1*$b" $b $zmin)                                // 56
+    (#calc "-1*$b" $b $zmax)                                // 57      
+    
+    // hex s
+    (#calc "-1*$r1" $yorg $zmin)                            // 58   
+    (#calc "-1*$r1" $yorg $zmax)                            // 59        
+    
+    // hex u
+    (#calc "-1*$c" #calc "-1*$c" $zmin)                     // 60
+    ($xorg #calc "-1*$r" $zmin)                             // 61 
+    (#calc "-1*$c" #calc "-1*$c" $zmax)                     // 62   
+    ($xorg #calc "-1*$r" $zmax)                             // 63  
+
+    // hex v
+    ($c #calc "-1*$c" $zmin)                                // 64
+    ($c #calc "-1*$c" $zmax)                                // 65      
+    
+    // hex w
+    ($r $yorg $zmin)                                        // 66 
+    ($r $yorg $zmax)                                        // 67
+
+    // hex x
+    ($c $c $zmin)                                           // 68
+    ($c $c $zmax)                                           // 69
+    
+    // hex y
+    ($xorg $r $zmin)                                        // 70
+    ($xorg $r $zmax)                                        // 71      
+    
+    // hex z
+    (#calc "-1*$c" $c $zmin)                                // 72
+    (#calc "-1*$c" $c $zmax)                                // 73      
+    
+    // hex æ
+    (#calc "-1*$r" $yorg $zmin)                             // 74   
+    (#calc "-1*$r" $yorg $zmax)                             // 75     
+    
+
+);
+
+blocks
+(
+      hex (0 1 2 3 4 5 6 7) (25 80 1) simpleGrading (1 1 1)               // a
+      hex (1 8 9 2 5 10 11 6) (80 80 1) simpleGrading (0.2 1 1)             // b
+      hex (1 12 13 8 5 14 15 10) (80 80 1) simpleGrading (1 0.2 1)          // c
+      hex (12 16 17 13 14 18 19 15) (80 80 1) simpleGrading (1 0.2 1)       // d
+      hex (17 16 21 20 19 18 23 22) (80 80 1) simpleGrading (5 1 1)       // e
+      hex (16 24 25 21 18 26 27 23) (75 80 1) simpleGrading (1 1 1)       // f
+      hex (21 25 28 29 23 27 30 31) (75 80 1) simpleGrading (1 1 1)       // g
+      hex (20 21 29 32 22 23 31 33) (80 80 1) simpleGrading (5 1 1)       // h
+      hex (35 32 29 34 37 33 31 36) (80 80 1) simpleGrading (1 5 1)       // i
+      hex (38 39 35 34 40 41 37 36) (80 80 1) simpleGrading (0.2 1 1)       // j
+      hex (2 9 39 38 6 11 41 40) (80 80 1) simpleGrading (0.2 1 1)          // k
+      hex (3 2 38 42 7 6 40 43) (25 80 1) simpleGrading (1 1 1)           // l
+      
+      hex (8 13 45 44 10 15 47 46) (80 80 1) simpleGrading (1 1 1)        // m
+      hex (13 17 48 45 15 19 49 47) (80 80 1) simpleGrading (1 1 1)       // n
+      hex (48 17 20 50 49 19 22 51) (80 80 1) simpleGrading (1 1 1)       // o
+      hex (50 20 32 52 51 22 33 53) (80 80 1) simpleGrading (1 1 1)       // p
+      hex (54 52 32 35 55 53 33 37) (80 80 1) simpleGrading (1 1 1)       // q
+      hex (56 54 35 39 57 55 37 41) (80 80 1) simpleGrading (1 1 1)       // r
+      hex (9 58 56 39 11 59 57 41) (80 80 1) simpleGrading (1 1 1)        // s
+      hex (8 44 58 9 10 46 59 11) (80 80 1) simpleGrading (1 1 1)         // t
+      
+      hex (44 45 61 60 46 47 63 62) (80 80 1) simpleGrading (1 1 1)       // u
+      hex (45 48 64 61 47 49 65 63) (80 80 1) simpleGrading (1 1 1)       // v
+      hex (64 48 50 66 65 49 51 67) (80 80 1) simpleGrading (1 1 1)       // w
+      hex (66 50 52 68 67 51 53 69) (80 80 1) simpleGrading (1 1 1)       // x
+      hex (70 68 52 54 71 69 53 55) (80 80 1) simpleGrading (1 1 1)       // y
+      hex (72 70 54 56 73 71 55 57) (80 80 1) simpleGrading (1 1 1)       // z
+      hex (58 74 72 56 59 75 73 57) (80 80 1) simpleGrading (1 1 1)       // æ
+      hex (44 60 74 58 46 62 75 59) (80 80 1) simpleGrading (1 1 1)       // ø
+      
+      
+      
+);    
+    
+edges           
+(
+    // Pipe
+    arc 60 61 (#calc "-1*$s" #calc "-1*$co" $zmin)                           // arc u
+    arc 62 63 (#calc "-1*$s" #calc "-1*$co" $zmax)                           // arc u
+    
+    arc 61 64 ($s #calc "-1*$co" $zmin)                                      // arc v
+    arc 63 65 ($s #calc "-1*$co" $zmax)                                      // arc v
+    
+    arc 64 66 ($co #calc "-1*$s" $zmin)                                      // arc w
+    arc 65 67 ($co #calc "-1*$s" $zmax)                                      // arc w
+    
+    arc 66 68 ($co $s $zmin)                                                 // arc x
+    arc 67 69 ($co $s $zmax)                                                 // arc x    
+    
+    arc 68 70 ($s $co $zmin)                                                 // arc y
+    arc 69 71 ($s $co $zmax)                                                 // arc y
+    
+    arc 70 72 (#calc "-1*$s" $co $zmin)                                      // arc z
+    arc 71 73 (#calc "-1*$s" $co $zmax)                                      // arc z    
+    
+    arc 72 74 (#calc "-1*$co" $s $zmin)                                      // arc æ
+    arc 73 75 (#calc "-1*$co" $s $zmax)                                      // arc æ 
+    
+    arc 74 60 (#calc "-1*$co" #calc "-1*$s" $zmin)                           // arc ø
+    arc 75 62 (#calc "-1*$co" #calc "-1*$s" $zmax)                           // arc ø
+    
+    
+);     
+
+boundary
+(
+    inlet
+    {
+        type patch;
+        faces
+        (
+            (0 3 7 4)
+            (3 42 43 7)
+
+        );
+        
+    }
+    
+    outlet
+    {
+        type patch;
+        faces
+        (
+            (28 25 27 30)
+            (25 24 26 27)
+        );
+    }
+    
+    lowerWall
+    {
+        type symmetryPlane;
+        faces
+        (
+            (24 16 18 26)
+            (16 12 14 18)
+            (12 1 5 14)
+            (1 0 4 5)
+        );
+    }
+    
+    upperWall
+    {
+        type symmetryPlane;
+        faces
+        (
+            (42 38 40 43)
+            (38 34 36 40)
+            (34 29 31 36)
+            (29 28 30 31)
+        );
+    }    
+    
+    pipe
+    {
+	type wall;
+	faces 
+    	(
+        	(68 70 71 69)  // y
+        	(70 72 73 71)  // z
+        	(72 74 75 73)  // æ
+        	(74 60 62 75)  // ø
+        	(60 61 63 62)  // u
+        	(61 64 65 63)  // v
+        	(64 66 67 65)  // w
+         	(66 68 69 67)  // x
+   	);
+     }    
+); 
+
+// ************************************************************************* //
