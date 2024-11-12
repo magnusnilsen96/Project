@@ -1,0 +1,278 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  12
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+convertToMeters 1;
+
+//////////////////////////// PARAMETERS FOR THE MESH ////////////////////////////
+// Domain 
+xmin -1;                           // left boundary
+xorg 0 ;                           // origin, x
+xmax 5;                            // right boundary
+ymin -0.5;                         // upper boundary
+yorg 0;                            // origin, y
+ymax 0.5;                          // lower boundary
+zmin 0;                            // plane 0
+zmax 1;                            // plane 1
+
+// Circle (for mesh)
+r1 0.15;                         // radius of the mesh circle
+a #calc "$r1*cos(0.785398163)";   // distance away from the origin to make vertices for mesh, 45 deg = 0.785398163 rad
+c1 #calc "$r1*cos(0.392699082)";  // distance away from the origin to make vertices for arc, 22.5 deg = 0.392699082 rad
+s1 #calc "$r1*sin(0.392699082)";  // distance away from the origin to make vertices for arc, 22.5 deg = 0.392699082 rad
+
+// Pipe
+r 0.05;                         // radius of the pipe
+b #calc "$r*cos(0.785398163)";  // distance away from the origin to make vertices for mesh,  45 deg = 0.785398163 rad
+c #calc "$r*cos(0.392699082)";  // distance away from the origin to make vertices for arc, 22.5 deg = 0.392699082 rad
+s #calc "$r*sin(0.392699082)";  // distance away from the origin to make vertices for arc, 22.5 deg = 0.392699082 rad
+//////////////////////////// PARAMETERS FOR THE MESH ////////////////////////////
+
+vertices
+(
+    //// Plane 0 ////
+    
+    // Domain
+    ($xmin $ymin $zmin)                                // 0
+    (#calc "-1*$a" $ymin $zmin)                        // 1
+    ($xorg $ymin $zmin)                                // 2
+    ($a $ymin $zmin)                                   // 3
+    ($xmax $ymin $zmin)                                // 4
+    ($xmax #calc "-1*$a" $zmin)                        // 5
+    ($xmax $yorg $zmin)                                // 6
+    ($xmax $a $zmin)                                   // 7
+    ($xmax $ymax $zmin)                                // 8
+    ($a $ymax $zmin)                                   // 9
+    ($xorg $ymax $zmin)                                // 10
+    (#calc "-1*$a" $ymax $zmin)                        // 11
+    ($xmin $ymax $zmin)                                // 12
+    ($xmin $a $zmin)                                   // 13
+    ($xmin $yorg $zmin)                                // 14
+    ($xmin #calc "-1*$a" $zmin)                        // 15
+    
+    // Outer Circle
+    ($xorg #calc "-1*$r1" $zmin)                       // 16
+    ($a #calc "-1*$a" $zmin)                           // 17
+    ($r1 $yorg $zmin)                                  // 18
+    ($a $a $zmin)                                      // 19
+    ($xorg $r1 $zmin)                                  // 20
+    (#calc "-1*$a" $a $zmin)                           // 21
+    (#calc "-1*$r1" $yorg $zmin)                       // 22
+    (#calc "-1*$a" #calc "-1*$a" $zmin)                // 23
+    
+    // Pipe
+    ($xorg #calc "-1*$r" $zmin)                        // 24
+    ($b #calc "-1*$b" $zmin)                           // 25
+    ($r $yorg $zmin)                                   // 26
+    ($b $b $zmin)                                      // 27
+    ($xorg $r $zmin)                                   // 28
+    (#calc "-1*$b" $b $zmin)                           // 29
+    (#calc "-1*$r" $yorg $zmin)                        // 30
+    (#calc "-1*$b" #calc "-1*$b" $zmin)                // 31    
+    
+    
+    //// Plane 1 ////
+    
+    // Domain
+    ($xmin $ymin $zmax)                                // 32
+    (#calc "-1*$a" $ymin $zmax)                        // 33
+    ($xorg $ymin $zmax)                                // 34
+    ($a $ymin $zmax)                                   // 35
+    ($xmax $ymin $zmax)                                // 36
+    ($xmax #calc "-1*$a" $zmax)                        // 37
+    ($xmax $yorg $zmax)                                // 38
+    ($xmax $a $zmax)                                   // 39
+    ($xmax $ymax $zmax)                                // 40
+    ($a $ymax $zmax)                                   // 41
+    ($xorg $ymax $zmax)                                // 42
+    (#calc "-1*$a" $ymax $zmax)                        // 43
+    ($xmin $ymax $zmax)                                // 44
+    ($xmin $a $zmax)                                   // 45
+    ($xmin $yorg $zmax)                                // 46
+    ($xmin #calc "-1*$a" $zmax)                        // 47
+    
+    // Outer Circle
+    ($xorg #calc "-1*$r1" $zmax)                       // 48
+    ($a #calc "-1*$a" $zmax)                           // 49
+    ($r1 $yorg $zmax)                                  // 50
+    ($a $a $zmax)                                      // 51
+    ($xorg $r1 $zmax)                                  // 52
+    (#calc "-1*$a" $a $zmax)                           // 53
+    (#calc "-1*$r1" $yorg $zmax)                       // 54
+    (#calc "-1*$a" #calc "-1*$a" $zmax)                // 55
+    
+    // Pipe
+    ($xorg #calc "-1*$r" $zmax)                        // 56
+    ($b #calc "-1*$b" $zmax)                           // 57
+    ($r $yorg $zmax)                                   // 58
+    ($b $b $zmax)                                      // 59
+    ($xorg $r $zmax)                                   // 60
+    (#calc "-1*$b" $b $zmax)                           // 61
+    (#calc "-1*$r" $yorg $zmax)                        // 62
+    (#calc "-1*$b" #calc "-1*$b" $zmax)                // 66 
+        
+);
+
+blocks
+(
+
+    // Domain
+    hex (0 1 23 15 32 33 55 47) (40 60 1) simpleGrading (1 1 1)          // a 
+    hex (1 2 16 23 33 34 48 55) (60 60 1) simpleGrading (1 1 1)          // b
+    hex (2 3 17 16 34 35 49 48) (60 60 1) simpleGrading (1 1 1)          // c
+    hex (3 4 5 17 35 36 37 49) (200 60 1) simpleGrading (1 1 1)           // d
+    hex (17 5 6 18 49 37 38 50) (200 60 1) simpleGrading (1 1 1)          // e
+    hex (18 6 7 19 50 38 39 51) (200 60 1) simpleGrading (1 1 1)          // f
+    hex (19 7 8 9 51 39 40 41) (200 60 1) simpleGrading (1 1 1)           // g
+    hex (20 19 9 10 52 51 41 42) (60 60 1) simpleGrading (1 1 1)         // h
+    hex (21 20 10 11 53 52 42 43) (60 60 1) simpleGrading (1 1 1)        // i
+    hex (13 21 11 12 45 53 43 44) (40 60 1) simpleGrading (1 1 1)        // j
+    hex (14 22 21 13 46 54 53 45) (40 60 1) simpleGrading (1 1 1)        // k
+    hex (15 23 22 14 47 55 54 46) (40 60 1) simpleGrading (1 1 1)        // l
+    
+    // Pipe
+    hex (23 16 24 31 55 48 56 63) (60 60 1) simpleGrading (1 0.05 1)        // m
+    hex (16 17 25 24 48 49 57 56) (60 60 1) simpleGrading (1 0.05 1)        // n
+    hex (17 18 26 25 49 50 58 57) (60 60 1) simpleGrading (1 0.05 1)        // o
+    hex (26 18 19 27 58 50 51 59) (60 60 1) simpleGrading (20 1 1)        // p
+    hex (28 27 19 20 60 59 51 52) (60 60 1) simpleGrading (1 20 1)        // q
+    hex (29 28 20 21 61 60 52 53) (60 60 1) simpleGrading (1 20 1)        // r
+    hex (22 30 29 21 54 62 61 53) (60 60 1) simpleGrading (0.05 1 1)        // t
+    hex (23 31 30 22 55 63 62 54) (60 60 1) simpleGrading (0.05 1 1)        // s
+  
+);    
+    
+edges           
+(
+    // Pipe
+    arc 31 24 (#calc "-1*$s" #calc "-1*$c" $zmin)                           // arc m
+    arc 63 56 (#calc "-1*$s" #calc "-1*$c" $zmax)                           // arc m
+    
+    arc 24 25 ($s #calc "-1*$c" $zmin)                                      // arc n
+    arc 56 57 ($s #calc "-1*$c" $zmax)                                      // arc n
+  
+    arc 25 26 ($c #calc "-1*$s" $zmin)                                      // arc o
+    arc 57 58 ($c #calc "-1*$s" $zmax)                                      // arc o
+
+    arc 26 27 ($c $s $zmin)                                                 // arc p
+    arc 58 59 ($c $s $zmax)                                                 // arc p
+
+    arc 27 28 ($s $c $zmin)                                                 // arc q
+    arc 59 60 ($s $c $zmax)                                                 // arc q
+
+    arc 28 29 (#calc "-1*$s" $c $zmin)                                      // arc r
+    arc 60 61 (#calc "-1*$s" $c $zmax)                                      // arc r
+    
+    arc 29 30 (#calc "-1*$c" $s $zmin)                                      // arc s
+    arc 61 62 (#calc "-1*$c" $s $zmax)                                      // arc s    
+
+    arc 30 31 (#calc "-1*$c" #calc "-1*$s" $zmin)                           // arc t
+    arc 62 63 (#calc "-1*$c" #calc "-1*$s" $zmax)                           // arc t
+    
+    // Outer Circle
+    arc 23 16 (#calc "-1*$s1" #calc "-1*$c1" $zmin)                           // arc m
+    arc 55 48 (#calc "-1*$s1" #calc "-1*$c1" $zmax)                           // arc m
+
+    arc 16 17 ($s1 #calc "-1*$c1" $zmin)                                      // arc n
+    arc 48 49 ($s1 #calc "-1*$c1" $zmax)                                      // arc n
+
+    arc 17 18 ($c1 #calc "-1*$s1" $zmin)                                      // arc o
+    arc 49 50 ($c1 #calc "-1*$s1" $zmax)                                      // arc o
+  
+    arc 18 19 ($c1 $s1 $zmin)                                                 // arc p
+    arc 50 51 ($c1 $s1 $zmax)                                                 // arc p  
+
+    arc 19 20 ($s1 $c1 $zmin)                                                 // arc q
+    arc 51 52 ($s1 $c1 $zmax)                                                 // arc q
+    
+    arc 20 21 (#calc "-1*$s1" $c1 $zmin)                                      // arc r
+    arc 52 53 (#calc "-1*$s1" $c1 $zmax)                                      // arc r   
+    
+    arc 21 22 (#calc "-1*$c1" $s1 $zmin)                                      // arc s
+    arc 53 54 (#calc "-1*$c1" $s1 $zmax)                                      // arc s     
+  
+    arc 22 23 (#calc "-1*$c1" #calc "-1*$s1" $zmin)                           // arc t
+    arc 54 55 (#calc "-1*$c1" #calc "-1*$s1" $zmax)                           // arc t  
+);    
+
+boundary
+(
+    inlet
+    {
+        type patch;
+        faces
+        (
+            (0 32 47 15)
+            (15 14 46 47)
+            (14 13 45 46)
+            (13 12 44 45)
+        );
+        
+    }
+    
+    outlet
+    {
+        type patch;
+        faces
+        (
+            (5 4 36 37)
+            (6 5 37 38)
+            (7 6 38 39)
+            (8 7 39 40)
+        );
+    }
+    
+    lowerWall
+    {
+        type symmetryPlane;
+        faces
+        (
+            (1 0 32 33)
+            (2 1 33 34)
+            (3 2 34 35)
+            (4 3 35 36)
+        );
+    }
+
+    upperWall
+    {
+        type symmetryPlane;
+        faces
+        (
+            (12 11 43 44)
+            (11 10 42 43)
+            (10 9 41 42)
+            (9 8 40 41)
+        );
+    }
+    
+    pipe
+    {
+	type wall;
+	faces 
+    	(
+        	(25 24 56 57)
+        	(26 25 57 58)
+        	(27 26 58 59)
+        	(28 27 59 60)
+        	(29 28 60 61)
+        	(30 29 61 62)
+        	(31 30 62 63)
+        	(24 31 63 56)
+   	);
+     }
+  
+); 
+
+// ************************************************************************* //
